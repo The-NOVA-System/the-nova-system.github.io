@@ -3,33 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="stylesheet" href="assets/css/Team-Boxed.css">
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/Team-Boxed.css">
+    <link rel="stylesheet" href="./assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/css/pikaday.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Nova System</title>
   </head>
-  <body>
+  <body id="body">
     <canvas id="bg"></canvas>
 
     <nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-white portfolio-navbar bg-transparent">
-      <div class="container"><a class="navbar-brand logo" href="#">The NOVA System</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navbarNav"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+      <div class="container"><a id="home-named" class="navbar-brand logo" href="#">The NOVA System</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navbarNav"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+            <li class="nav-item"><a id="home" class="nav-link" href="#">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="https://github.com/The-NOVA-System">Github</a></li>
             <li class="nav-item"><a class="nav-link" href="/nova_app">App</a></li>
-            <li class="nav-item"><a class="nav-link" href="https://timelines.gitkraken.com/timeline/912935f2f00c40589588a302beae453f">Timeline</a></li>
             <li class="nav-item"><a class="nav-link" href="/blog">Blog</a></li>
-            <li class="nav-item"><a class="nav-link" href="/contact.html">Contact Us</a></li>
+            <li class="nav-item"><a id="contact-form" class="nav-link" href="/contact">Contact Us</a></li>
           </ul>
         </div>
       </div>
     </nav>
 
-    <main style="padding-top: 250px;">
+    <main style="padding-top: 250px;" id="home-page">
 
       <header>
         <h2>The Nova System</h2>
@@ -105,6 +104,25 @@
       </blockquote>
 
 
+    </main>
+    <main style="padding-top: 250px; display: none;" id="contact-page">
+      <section style="grid-column: 3 / 11; background: rgba(30, 32, 40, 0.5)" class="portfolio-block contact">
+        <div class="container">
+          <div class="heading">
+            <h2>Contact Us</h2>
+          </div>
+          <form action="https://send.pageclip.co/dCK42sJinGvUQf8fpxvtoDeZrsZNZE9L" class="pageclip-form" method="post">
+            <!-- Replace these inputs with your own. Make sure they have a "name" attribute! -->
+            <div class="mb-3"><label class="form-label" for="name">Your Name</label><input class="form-control item" id="name" type="text" name="name" required/></div>
+            <div class="mb-3"><label class="form-label" for="email">Your Email</label><input class="form-control item" id="email" type="email" name="email" required/></div>
+            <div class="mb-3"><label class="form-label" for="subject">Subject</label><input class="form-control item" id="subject" type="text" name="subject" required/></div>
+            <div class="mb-3"><label class="form-label" for="message">Message</label><textarea class="form-control item" id="message" type="text" name="body" required></textarea></div>
+
+            <!-- This button will have a loading spinner. Keep the inner span for best results. -->
+            <div class="mb-3"><button type="submit" class="pageclip-form__submit btn btn-primary btn-lg d-block w-100"><span>Send</span></button></div>
+          </form>
+        </div>
+      </section>
     </main>
 
     <div id="app"></div>

@@ -11,6 +11,9 @@
     "vite": "^2.7.2"
   },
   "dependencies": {
+    "@barba/core": "^2.9.7",
+    "@dogstudio/highway": "^2.2.1",
+    "gsap": "^3.9.1",
     "three": "^0.136.0"
   }
 }
