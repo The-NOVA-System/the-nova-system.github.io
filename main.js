@@ -27,6 +27,17 @@ camera.position.setX(-3);
 
 renderer.render(scene, camera);
 
+// Window Resize
+window.addEventListener('resize', reportWindowSize);
+function reportWindowSize() {
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  
+  const canvas = renderer.domElement;
+  camera.aspect = canvas.clientWidth / canvas.clientHeight;
+  camera.updateProjectionMatrix();
+}
+
 // Transition Function
 function doTransition(homePage, contactPage, back) {
   let times = 0;

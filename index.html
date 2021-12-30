@@ -45,13 +45,13 @@
       </div>
     </nav>
 
-    <main style="padding-top: 250px;" id="home-page">
+    <main class="home" id="home-page">
 
       <header>
         <h2>The Nova System</h2>
         <p>an innovative learning experience</p>
         <a href="https://apps.apple.com/us/app/the-nova-system/id1594831422?itsct=apps_box_badge&amp;itscg=30200" style="display: inline-block; overflow: hidden; border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;"><img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1636934400&h=ab19a594471bc40908aaf0b3f1c2a13d" alt="Download on the App Store" style="border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;"></a>
-        <a href="https://apps.apple.com/us/app/the-nova-system/id1594831422?itsct=apps_box_badge&amp;itscg=30200" style="display: inline-block; overflow: hidden; border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;"><img src="https://tools.applemediaservices.com/api/badges/download-on-the-mac-app-store/black/en-us?size=250x83&amp;releaseDate=1636934400&h=f0b41c137b4d17164f9230e4847a0309" alt="Download on the Mac App Store" style="border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;"></a>
+        <a class="mac-link" href="https://apps.apple.com/us/app/the-nova-system/id1594831422?itsct=apps_box_badge&amp;itscg=30200"><img class="mac-button" src="https://tools.applemediaservices.com/api/badges/download-on-the-mac-app-store/black/en-us?size=250x83&amp;releaseDate=1636934400&h=f0b41c137b4d17164f9230e4847a0309" alt="Download on the Mac App Store" style="border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;"></a>
       </header>
 
 
@@ -75,7 +75,7 @@
             <p class="text-center">Hi, we're the NOVA Team! Here's a little about us:</p>
           </div><!-- End: Intro -->
           <!-- Start: People -->
-          <div class="row people">
+          <div class="row people about">
             <div class="col-md-6 col-lg-4 d-flex flex-fill justify-content-md-center item">
               <div class="box"><img class="rounded-circle" src="assets/img/liam.png">
                 <h3 class="name">Liam</h3>
@@ -144,5 +144,10 @@
 
     <div id="app"></div>
     <script type="module" src="/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/smart-forms.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js"></script>
   </body>
 </html>
