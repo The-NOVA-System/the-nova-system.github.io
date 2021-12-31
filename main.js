@@ -20,7 +20,6 @@ const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector("#bg"),
 });
 
-renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(30);
 camera.position.setX(-3);
@@ -32,16 +31,25 @@ window.addEventListener('resize', reportWindowSize);
 function reportWindowSize() {
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
+}
 
+function resizeRendererToDisplaySize(renderer) {
   const canvas = renderer.domElement;
-  camera.aspect = canvas.clientWidth / canvas.clientHeight;
-  camera.updateProjectionMatrix();
+  const pixelRatio = window.devicePixelRatio;
+  const width  = canvas.clientWidth  * pixelRatio | 0;
+  const height = canvas.clientHeight * pixelRatio | 0;
+  const needResize = canvas.width !== width || canvas.height !== height;
+  if (needResize) {
+    renderer.setSize(width, height, false);
+  }
+  return needResize;
 }
 
 // Transition Function
 function doTransition(homePage, contactPage, back) {
   let times = 0;
   let times2 = 0;
+  window.scrollBy(0, -10000);
   homePage.addEventListener("animationend", () => {
     if (times === 0) {
       homePage.classList.remove('fade-out');
@@ -120,7 +128,7 @@ scene.background = spaceTexture;
 
 // Avatar
 
-const logoTexture = new THREE.TextureLoader().load("https://the-nova-system.github.io/extra-assets/logo.svg");
+const logoTexture = new THREE.TextureLoader().load("https://the-nova-system.github.io/extra-assets/logo.png");
 
 const logo = new THREE.Mesh(
   new THREE.BoxGeometry(3, 3, 3),
@@ -276,10 +284,6 @@ function animateHome() {
       const tween = new TWEEN.Tween(position).to(target, 2000);
       tween.easing(TWEEN.Easing.Quadratic.InOut)
       tween.onUpdate(function () {
-        if (document.body.scrollTop !== 0 || document.documentElement.scrollTop !== 0) {
-          window.scrollBy(0, -80);
-        }
-
         camera.position.x = position.x;
         camera.position.y = position.y;
         camera.position.z = position.z;
@@ -325,6 +329,12 @@ function animate() {
   torus.rotation.z += 0.01;
 
   moon.rotation.x += 0.005;
+
+  if (resizeRendererToDisplaySize(renderer)) {
+    const canvas = renderer.domElement;
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  }
 
   // controls.update();
 
