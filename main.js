@@ -127,12 +127,12 @@ Array(200).fill().forEach(addStar);
 
 // Background
 
-const spaceTexture = new THREE.TextureLoader().load("https://the-nova-system.github.io/extra-assets/space.webp");
+const spaceTexture = new THREE.TextureLoader().load("https://the-nova-system.github.io/extra-assets/space.jpg");
 scene.background = spaceTexture;
 
 // Avatar
 
-const logoTexture = new THREE.TextureLoader().load("https://the-nova-system.github.io/extra-assets/logo.webp");
+const logoTexture = new THREE.TextureLoader().load("https://the-nova-system.github.io/extra-assets/logo.png");
 
 const logo = new THREE.Mesh(
   new THREE.BoxGeometry(3, 3, 3),
@@ -147,8 +147,8 @@ scene.add(logo);
 
 // Moon
 
-const moonTexture = new THREE.TextureLoader().load("https://the-nova-system.github.io/extra-assets/moon.webp");
-const normalTexture = new THREE.TextureLoader().load("https://the-nova-system.github.io/extra-assets/normal.webp");
+const moonTexture = new THREE.TextureLoader().load("https://the-nova-system.github.io/extra-assets/moon.jpg");
+const normalTexture = new THREE.TextureLoader().load("https://the-nova-system.github.io/extra-assets/normal.jpg");
 
 const moon = new THREE.Mesh(
   new THREE.SphereGeometry(3, 32, 32),
