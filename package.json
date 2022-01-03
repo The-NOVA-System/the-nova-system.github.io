@@ -14,6 +14,7 @@
     "@barba/core": "^2.9.7",
     "@dogstudio/highway": "^2.2.1",
     "gsap": "^3.9.1",
-    "three": "^0.136.0"
+    "three": "^0.136.0",
+    "vite-plugin-mpa": "^1.1.1"
   }
 }
