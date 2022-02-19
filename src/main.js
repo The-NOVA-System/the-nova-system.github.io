@@ -5,6 +5,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 // Setup
 let contact = 0;
+let team = 0;
 let home = 0;
 
 const scene = new THREE.Scene();
@@ -160,7 +161,7 @@ const moon = new THREE.Mesh(
 
 scene.add(moon);
 
-moon.position.z = 30;
+moon.position.z = 20;
 moon.position.setX(-10);
 
 logo.position.z = -5;
@@ -188,24 +189,51 @@ moveCamera();
 // Page Load Function
 window.onload = function() {
   if (location.hash === '#contact') {
-    contactForm();
+    console.log(location.hash);
+    contactForm('home-page', 'contact-page');
+  } else if (location.hash === '#team') {
+    console.log(location.hash);
+    teamPage('home-page', 'team-page');
   }
 
   const a = document.getElementById("contact-form");
   const b = document.getElementById("home");
   const c = document.getElementById("home-named");
+  const d = document.getElementById("our-team-button");
 
   a.onclick = function() {
+    console.log(location.hash);
+    let initialPage = '';
+    if (location.hash === '')  {
+      initialPage = 'home-page';
+    } else {
+      initialPage = location.hash.substring(1) + '-page';
+    }
     if (location.hash !== '#contact') {
-      contactForm();
+      contactForm(initialPage, 'contact-page');
     }
     location.hash = "#contact";
     return false;
   }
 
+  d.onclick = function() {
+    console.log(location.hash);
+    let initialPage = '';
+    if (location.hash === '')  {
+      initialPage = 'home-page';
+    } else {
+      initialPage = location.hash.substring(1) + '-page';
+    }
+    if (location.hash !== '#team') {
+      teamPage(initialPage, 'team-page');
+    }
+    location.hash = "#team";
+    return false;
+  }
+
   b.onclick = function() {
     if (location.hash !== '#home') {
-      animateHome();
+      animateHome(location.hash.substring(1) + '-page', 'home-page');
     }
     location.hash = "#home";
     return false;
@@ -213,7 +241,7 @@ window.onload = function() {
 
   c.onclick = function() {
     if (location.hash !== '#home') {
-      animateHome();
+      animateHome(location.hash.substring(1) + '-page', 'home-page');
     }
     location.hash = "#home";
     return false;
@@ -222,14 +250,14 @@ window.onload = function() {
 
 // Animate to Contact Form
 
-function contactForm() {
+function contactForm(input, output) { //'home-page', 'contact-page'
   if (contact === -1) {
     contact = 0;
   } else {
     requestAnimationFrame(contactForm);
 
     if (contact === 0) {
-      doTransition(document.getElementById('home-page'), document.getElementById('contact-page'), false);
+      doTransition(document.getElementById(input), document.getElementById(output), false);
 
       let position = {x: camera.position.x, y: camera.position.y, z: camera.position.z};
       let target = {x: 20, y: 25, z: -15};
@@ -273,15 +301,66 @@ function contactForm() {
   }
 }
 
+function teamPage(input, output) { //'home-page', 'team-page'
+  if (team === -1) {
+    team = 0;
+  } else {
+    requestAnimationFrame(teamPage);
+
+    if (team === 0) {
+      doTransition(document.getElementById(input), document.getElementById(output), false);
+
+      let position = {x: camera.position.x, y: camera.position.y, z: camera.position.z};
+      let target = {x: 10, y: 30, z: -18};
+      const tween = new TWEEN.Tween(position).to(target, 2000);
+      tween.easing(TWEEN.Easing.Quadratic.InOut)
+      tween.onUpdate(function () {
+        camera.position.x = position.x;
+        camera.position.y = position.y;
+        camera.position.z = position.z;
+      });
+
+
+      let startRotation = new THREE.Euler().copy(camera.rotation);
+      camera.lookAt(new THREE.Vector3(target.x, target.y, target.z));
+      let endRotation = new THREE.Euler().copy(camera.rotation);
+      camera.rotation.copy(startRotation);
+      const rotationTween = new TWEEN.Tween(startRotation).to({
+        x: endRotation.x,
+        y: endRotation.y,
+        z: endRotation.z
+      }, 2000);
+      rotationTween.easing(TWEEN.Easing.Quadratic.InOut);
+      rotationTween.onUpdate(function () {
+        camera.rotation.x = startRotation.x;
+        camera.rotation.y = startRotation.y;
+        camera.rotation.z = startRotation.z;
+      });
+
+      tween.onComplete(function () {
+        team = -1;
+      });
+
+      tween.start();
+      rotationTween.start();
+    }
+
+    team += 1;
+    TWEEN.update();
+
+    renderer.render(scene, camera);
+  }
+}
+
 // Animate to Home
-function animateHome() {
+function animateHome(input, output) { //'contact-page', 'home-page'
   if (home === -1) {
     home = 0;
   } else {
     requestAnimationFrame(animateHome);
 
     if (home === 0) {
-      doTransition(document.getElementById('contact-page'), document.getElementById('home-page'), true);
+      doTransition(document.getElementById(input), document.getElementById(output), true);
 
       let position = {x: camera.position.x, y: camera.position.y, z: camera.position.z};
       let target = {x: 0, y: 0, z: 0};
