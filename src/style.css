@@ -84,7 +84,9 @@ html, body {
   }
 
   blockquote {
-    line-height: 3.65rem;
+    display: inline-block; 
+    height: 1.2em;
+    line-height: 1.2;
     padding: 0;
     grid-column: 2 / span 10;
     margin: 0 0 var(--spacing);
@@ -140,7 +142,7 @@ html, body {
   }
 
   blockquote {
-    line-height: 3.65rem;
+    line-height: clamp(35px, 4.83vw, 120px);
     padding: 0;
     grid-column: 2 / span 9;
     margin: 0 0 var(--spacing);
@@ -165,7 +167,6 @@ html, body {
 blockquote p {
   color: black;
   background-color: rgba(255, 255, 255, 0.75);
-  font-size: 3.2rem;
   display: inline;
 }
 
