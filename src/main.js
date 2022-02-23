@@ -1,29 +1,32 @@
 import "./style.css";
 import * as THREE from "three";
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+//import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-// Setup
-let contact = 0;
-let team = 0;
-let home = 0;
-let blog = 0;
+let pages = {
+  blog: {name: 'blog-page', buttons: ['blog-button'], target: {x: -10, y: -30, z: 18}},
+  contact: {name: 'contact-page', buttons: ['contact-button'], target: {x: 20, y: 25, z: -15}},
+  team: {name: 'team-page', buttons: ['team-button'], target: {x: 10, y: 30, z: -18}},
+  home: {name: 'home-page', buttons: ['home-button', 'home-named'], target: {x: 0, y: 0, z: 0}, endRotation: new THREE.Euler(0, 0, 0, 'XYZ')},
+}
+
+let pageCounter = {};
 
 // this script loads atom/rss feed to the "block-content" div
 
 function makeBlogPost() {
-  var postElem = document.createElement("div")
-  var CSSattr = document.createAttribute("class")
-  CSSattr.value = "clean-blog-post"
-  postElem.setAttributeNode(CSSattr)
+  let postElem = document.createElement("div");
+  let CSS_attribute = document.createAttribute("class");
+  CSS_attribute.value = "clean-blog-post"
+  postElem.setAttributeNode(CSS_attribute)
   return postElem;
 }
 
 //fetches the posts from the rss feed
 function fetchPosts() {
   const request = new XMLHttpRequest();
-  const getUrl = window.location;
-  const baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+  //const getUrl = window.location;
+  //const baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
   const ATOM_FEED_URL = "https://the-nova-system.github.io/blog/feed.xml";
   const ERROR_MSG = "Uh Oh: Cannot load posts at the moment :("
   request.open("GET", ATOM_FEED_URL, true);
@@ -195,14 +198,14 @@ function addStar() {
   const star = new THREE.Mesh(geometry, material);
 
   const [x, y, z] = Array(3)
-      .fill()
+      .fill(undefined, undefined, undefined)
       .map(() => THREE.MathUtils.randFloatSpread(100));
 
   star.position.set(x, y, z);
   scene.add(star);
 }
 
-Array(200).fill().forEach(addStar);
+Array(200).fill(undefined, undefined, undefined).forEach(addStar);
 
 // Background
 
@@ -267,92 +270,55 @@ moveCamera();
 
 // Page Load Function
 window.onload = function() {
-  if (location.hash === '#contact') {
-    contactForm('home-page', 'contact-page');
-  } else if (location.hash === '#team') {
-    teamPage('home-page', 'team-page');
-  } else if (location.hash === '#blog') {
-    blogPage('home-page', 'blog-page');
-  }
+  for (const key in pages) {
+    if (pages.hasOwnProperty(key)) {
+      if (location.hash === '#' + key && location.hash !== '#home') {
+        animateToPage(pages['home']['name'], pages[key]['name'], pages[key]['target'], key);
+      }
 
-  const a = document.getElementById("contact-form");
-  const b = document.getElementById("home");
-  const c = document.getElementById("home-named");
-  const d = document.getElementById("our-team-button");
-  const e = document.getElementById("blog-button");
+      const buttonElements = pages[key]['buttons'];
 
-  a.onclick = function() {
-    let initialPage = '';
-    if (location.hash === '')  {
-      initialPage = 'home-page';
-    } else {
-      initialPage = location.hash.substring(1) + '-page';
-    }
-    if (location.hash !== '#contact') {
-      contactForm(initialPage, 'contact-page');
-    }
-    location.hash = "#contact";
-    return false;
-  }
+      for (let i = 0; i < buttonElements.length; i++) {
+        const buttonElement = document.getElementById(buttonElements[i]);
 
-  d.onclick = function() {
-    let initialPage = '';
-    if (location.hash === '')  {
-      initialPage = 'home-page';
-    } else {
-      initialPage = location.hash.substring(1) + '-page';
+        buttonElement.onclick = function() {
+          let initialPage;
+          if (location.hash === '')  {
+            initialPage = pages['home']['name'];
+          } else {
+            initialPage = location.hash.substring(1) + '-page';
+          }
+          if (location.hash !== '#' + key) {
+            if (!(location.hash === '' && pages[key]['name'] === pages['home']['name'])) {
+              animateToPage(initialPage, pages[key]['name'], pages[key]['target'], key, pages[key]['endRotation']);
+            }
+          }
+          location.hash = '#' + key;
+          return false;
+        }
+      }
     }
-    if (location.hash !== '#team') {
-      teamPage(initialPage, 'team-page');
-    }
-    location.hash = "#team";
-    return false;
-  }
-
-  e.onclick = function() {
-    let initialPage = '';
-    if (location.hash === '')  {
-      initialPage = 'home-page';
-    } else {
-      initialPage = location.hash.substring(1) + '-page';
-    }
-    if (location.hash !== '#team') {
-      blogPage(initialPage, 'blog-page');
-    }
-    location.hash = "#blog";
-    return false;
-  }
-
-  b.onclick = function() {
-    if (location.hash !== '#home') {
-      animateHome(location.hash.substring(1) + '-page', 'home-page');
-    }
-    location.hash = "#home";
-    return false;
-  }
-
-  c.onclick = function() {
-    if (location.hash !== '#home') {
-      animateHome(location.hash.substring(1) + '-page', 'home-page');
-    }
-    location.hash = "#home";
-    return false;
   }
 }
 
-// Animate to Contact Form
+// Animate to page
 
-function contactForm(input, output) { //'home-page', 'contact-page'
-  if (contact === -1) {
-    contact = 0;
+function animateToPage(input, output, target, name, finalRotation) { //'home-page', 'contact-page'
+  if (pageCounter[name] === undefined) {
+    pageCounter[name] = 0;
+  }
+
+  if (pageCounter[name] === -1) {
+    pageCounter[name] = 0;
   } else {
-    requestAnimationFrame(contactForm);
+    requestAnimationFrame(animateToPage.bind(this, input, output, target, name));
 
-    if (contact === 0) {
-      doTransition(document.getElementById(input), document.getElementById(output), false);
+    if (pageCounter[name] === 0) {
+      let back;
+      back = name === 'home';
+      doTransition(document.getElementById(input), document.getElementById(output), back);
 
       let position = {x: camera.position.x, y: camera.position.y, z: camera.position.z};
-      let target = {x: 20, y: 25, z: -15};
       const tween = new TWEEN.Tween(position).to(target, 2000);
       tween.easing(TWEEN.Easing.Quadratic.InOut)
       tween.onUpdate(function () {
@@ -364,7 +330,12 @@ function contactForm(input, output) { //'home-page', 'contact-page'
 
       let startRotation = new THREE.Euler().copy(camera.rotation);
       camera.lookAt(new THREE.Vector3(target.x, target.y, target.z));
-      let endRotation = new THREE.Euler().copy(camera.rotation);
+      let endRotation;
+      if (finalRotation === undefined) {
+        endRotation = new THREE.Euler().copy(camera.rotation);
+      } else {
+        endRotation = finalRotation;
+      }
       camera.rotation.copy(startRotation);
       const rotationTween = new TWEEN.Tween(startRotation).to({
         x: endRotation.x,
@@ -379,167 +350,17 @@ function contactForm(input, output) { //'home-page', 'contact-page'
       });
 
       tween.onComplete(function () {
-        contact = -1;
+        pageCounter[name] = -1;
+        if (name === 'blog') {
+          fetchPosts();
+        }
       });
 
       tween.start();
       rotationTween.start();
     }
 
-    contact += 1;
-    TWEEN.update();
-
-    renderer.render(scene, camera);
-  }
-}
-
-function teamPage(input, output) { //'home-page', 'team-page'
-  if (team === -1) {
-    team = 0;
-  } else {
-    requestAnimationFrame(teamPage);
-
-    if (team === 0) {
-      doTransition(document.getElementById(input), document.getElementById(output), false);
-
-      let position = {x: camera.position.x, y: camera.position.y, z: camera.position.z};
-      let target = {x: 10, y: 30, z: -18};
-      const tween = new TWEEN.Tween(position).to(target, 2000);
-      tween.easing(TWEEN.Easing.Quadratic.InOut)
-      tween.onUpdate(function () {
-        camera.position.x = position.x;
-        camera.position.y = position.y;
-        camera.position.z = position.z;
-      });
-
-
-      let startRotation = new THREE.Euler().copy(camera.rotation);
-      camera.lookAt(new THREE.Vector3(target.x, target.y, target.z));
-      let endRotation = new THREE.Euler().copy(camera.rotation);
-      camera.rotation.copy(startRotation);
-      const rotationTween = new TWEEN.Tween(startRotation).to({
-        x: endRotation.x,
-        y: endRotation.y,
-        z: endRotation.z
-      }, 2000);
-      rotationTween.easing(TWEEN.Easing.Quadratic.InOut);
-      rotationTween.onUpdate(function () {
-        camera.rotation.x = startRotation.x;
-        camera.rotation.y = startRotation.y;
-        camera.rotation.z = startRotation.z;
-      });
-
-      tween.onComplete(function () {
-        team = -1;
-      });
-
-      tween.start();
-      rotationTween.start();
-    }
-
-    team += 1;
-    TWEEN.update();
-
-    renderer.render(scene, camera);
-  }
-}
-
-function blogPage(input, output) {
-  if (blog === -1) {
-    blog = 0;
-  } else {
-    requestAnimationFrame(blogPage);
-
-    if (blog === 0) {
-      doTransition(document.getElementById(input), document.getElementById(output), false);
-
-      let position = {x: camera.position.x, y: camera.position.y, z: camera.position.z};
-      let target = {x: -10, y: -30, z: 18};
-      const tween = new TWEEN.Tween(position).to(target, 2000);
-      tween.easing(TWEEN.Easing.Quadratic.InOut)
-      tween.onUpdate(function () {
-        camera.position.x = position.x;
-        camera.position.y = position.y;
-        camera.position.z = position.z;
-      });
-
-
-      let startRotation = new THREE.Euler().copy(camera.rotation);
-      camera.lookAt(new THREE.Vector3(target.x, target.y, target.z));
-      let endRotation = new THREE.Euler().copy(camera.rotation);
-      camera.rotation.copy(startRotation);
-      const rotationTween = new TWEEN.Tween(startRotation).to({
-        x: endRotation.x,
-        y: endRotation.y,
-        z: endRotation.z
-      }, 2000);
-      rotationTween.easing(TWEEN.Easing.Quadratic.InOut);
-      rotationTween.onUpdate(function () {
-        camera.rotation.x = startRotation.x;
-        camera.rotation.y = startRotation.y;
-        camera.rotation.z = startRotation.z;
-      });
-
-      tween.onComplete(function () {
-        fetchPosts()
-        blog = -1;
-      });
-
-      tween.start();
-      rotationTween.start();
-    }
-
-    blog += 1;
-    TWEEN.update();
-
-    renderer.render(scene, camera);
-  }
-}
-
-// Animate to Home
-function animateHome(input, output) { //'contact-page', 'home-page'
-  if (home === -1) {
-    home = 0;
-  } else {
-    requestAnimationFrame(animateHome);
-
-    if (home === 0) {
-      doTransition(document.getElementById(input), document.getElementById(output), true);
-
-      let position = {x: camera.position.x, y: camera.position.y, z: camera.position.z};
-      let target = {x: 0, y: 0, z: 0};
-      const tween = new TWEEN.Tween(position).to(target, 2000);
-      tween.easing(TWEEN.Easing.Quadratic.InOut)
-      tween.onUpdate(function () {
-        camera.position.x = position.x;
-        camera.position.y = position.y;
-        camera.position.z = position.z;
-      });
-
-
-      let startRotation = new THREE.Euler().copy(camera.rotation);
-      let endRotation = new THREE.Euler(0, 0, 0, 'XYZ');
-      const rotationTween = new TWEEN.Tween(startRotation).to({
-        x: endRotation.x,
-        y: endRotation.y,
-        z: endRotation.z
-      }, 2000);
-      rotationTween.easing(TWEEN.Easing.Quadratic.InOut);
-      rotationTween.onUpdate(function () {
-        camera.rotation.x = startRotation.x;
-        camera.rotation.y = startRotation.y;
-        camera.rotation.z = startRotation.z;
-      });
-
-      tween.onComplete(function () {
-        home = -1;
-      });
-
-      tween.start();
-      rotationTween.start();
-    }
-
-    home += 1;
+    pageCounter[name] += 1;
     TWEEN.update();
 
     renderer.render(scene, camera);
