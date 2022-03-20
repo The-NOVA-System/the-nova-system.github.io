@@ -282,7 +282,7 @@ function onMouseWheel(ev) {
         } else {
             camera.position.x += ev.deltaY / 500;
             camera.rotation.y += ev.deltaY / 2000;
-            camera.position.z += ev.deltaY / -100;
+            camera.position.z += ev.deltaY / 100;
         }
     }
 }
